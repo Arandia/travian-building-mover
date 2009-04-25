@@ -76,10 +76,10 @@ div.addEventListener('click', function(){
         var src;
         for (var i in poly)
             if (poly[i].href != undefined)
-                poly[i].href = '#'+poly[i].href.split('id=')[1];
+                poly[i].href = '#'+(poly[i].href.split('id=')[1] - 18);
 
         for (var i in img) img[i].addEventListener('click', function(e){
-                var dest = (parseInt(e.target.href.split('#')[1]) - 18)+'';
+                var dest = e.target.href.split('#')[1];
 
                 GM_log(e.target.title);
                 if (stage == 0){
@@ -90,14 +90,17 @@ div.addEventListener('click', function(){
                 } else {
                     var m = mapping[did];
 
+                    //GM_log('src='+src+' dest='+dest);
                     // First, find who *holds* src right now
                     var temp = src;
                     while (m[temp] != undefined && m[temp] != src) temp = m[temp];
-                    m[temp] = dest;
                     // Find who *holds* dest right now
-                    temp = dest;
-                    while (m[temp] != undefined && m[temp] != dest) temp = m[temp];
-                    m[temp] = src;
+                    var temp2 = dest;
+                    while (m[temp2] != undefined && m[temp2] != dest) temp2 = m[temp2];
+                    //GM_log('m['+temp+']='+dest);
+                    //GM_log('m['+temp2+']='+src);
+                    m[temp] = dest;
+                    m[temp2] = src;
 
                     GM_setValue('mapping', uneval(mapping));
                     window.location.reload();
