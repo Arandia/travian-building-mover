@@ -99,8 +99,8 @@ div.addEventListener('click', function(){
                     while (m[temp2] != undefined && m[temp2] != dest) temp2 = m[temp2];
                     //GM_log('m['+temp+']='+dest);
                     //GM_log('m['+temp2+']='+src);
-                    m[temp] = dest;
-                    m[temp2] = src;
+                    m[temp] = parseInt(dest);
+                    m[temp2] = parseInt(src);
 
                     GM_setValue('mapping', uneval(mapping));
                     window.location.reload();
