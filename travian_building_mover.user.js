@@ -79,7 +79,7 @@ div.addEventListener('click', function(){
                 poly[i].href = '#'+poly[i].href.split('id=')[1];
 
         for (var i in img) img[i].addEventListener('click', function(e){
-                var dest = parseInt(e.target.href.split('#')[1]) - 18;
+                var dest = (parseInt(e.target.href.split('#')[1]) - 18)+'';
 
                 GM_log(e.target.title);
                 if (stage == 0){
@@ -92,12 +92,12 @@ div.addEventListener('click', function(){
 
                     // First, find who *holds* src right now
                     var temp = src;
-                    while (m[uneval(temp)] != undefined && m[uneval(temp)] != src) temp = m[uneval(temp)];
-                    m[uneval(temp)] = dest;
+                    while (m[temp] != undefined && m[temp] != src) temp = m[temp];
+                    m[temp] = dest;
                     // Find who *holds* dest right now
                     temp = dest;
-                    while (m[uneval(temp)] != undefined && m[uneval(temp)] != dest) temp = m[uneval(temp)];
-                    m[uneval(temp)] = src;
+                    while (m[temp] != undefined && m[temp] != dest) temp = m[temp];
+                    m[temp] = src;
 
                     GM_setValue('mapping', uneval(mapping));
                     window.location.reload();
