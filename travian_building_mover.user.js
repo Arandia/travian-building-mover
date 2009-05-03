@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        0.9.2
+// @version        1.0.0
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -23,6 +23,11 @@
  * <http://www.gnu.org.licenses/>
  *****************************************************************************/
 
+ // Init
+var server = location.host;
+var uid = document.evaluate("id('navi_table')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
+//GM_log("uid: " + uid);
+
 // Look at where the original buildings are *first*
 var data = [];
 var poly = document.getElementsByName('map1')[0].childNodes;
@@ -41,7 +46,27 @@ var mapping = eval(GM_getValue('mapping', '({})'));
 
 // Get the active village, to store the new mappings
 // We don't have to worry about postfixes because we're only running on one page
-var did = document.evaluate('//a[@class="active_vl"]', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue.href.match('newdid=([0-9]*)')[1];
+var did = document.evaluate('//a[@class="active_vl"]', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
+
+// Single village support courtesy of Booboo
+if (!did) {
+    var single_villages = eval(GM_getValue('single_villages', '({})'));
+    if (!single_villages[server + "_" + uid]){
+	GM_xmlhttpRequest({
+                method: 'GET',
+                url: "http://" + server + "/dorf3.php",
+                onload: function(xhr){
+                    var did = xhr.responseText.match(/newdid=(\d+)/)[1];
+                    single_villages[server + "_" + uid] = did;
+                    GM_setValue('single_villages', uneval(single_villages));
+                    window.location.reload();
+                }
+            });
+        return;
+    }
+    else did = single_villages[server + "_" + uid];
+}
+else did = did.href.match('newdid=([0-9]*)')[1];
 
 if (mapping[did] == undefined) mapping[did] = {};
 
@@ -67,7 +92,7 @@ function notify(msg){
     div.innerHTML = msg;
     document.getElementById('ltop1').parentNode.appendChild(div);
 
-    window.setTimeout(function(){div.parentNode.removeChild(div);}, 3000);
+    window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
 
 div.addEventListener('click', function(){
@@ -77,9 +102,21 @@ div.addEventListener('click', function(){
         for (var i in poly)
             if (poly[i].href != undefined)
                 poly[i].href = '#'+(poly[i].href.split('id=')[1] - 18);
+        var wall = document.getElementsByName('map2')[0].childNodes;
+        for (var i in wall)
+            if (wall[i].href != undefined)
+                wall[i].href = '#22';
 
         for (var i in img) img[i].addEventListener('click', function(e){
                 var dest = e.target.href.split('#')[1];
+                if (dest == '21'){
+                    notify('<b>You cannot move the rally point</b>');
+                    return;
+                }
+                if (dest == '22'){
+                    notify('<b>You cannot move the walls</b>');
+                    return;
+                }
 
                 GM_log(e.target.title);
                 if (stage == 0){
