@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.0.0
+// @version        1.1.0
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -25,20 +25,21 @@
 
  // Init
 var server = location.host;
-var uid = document.evaluate("id('navi_table')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
+var uid = document.evaluate("id('sleft')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
 //GM_log("uid: " + uid);
 
 // Look at where the original buildings are *first*
 var data = [];
-var poly = document.getElementsByName('map1')[0].childNodes;
-var img = document.getElementById('lmid2').childNodes;
+var poly = document.getElementById('map2').childNodes;
+var img = document.getElementById('map2').nextSibling.nextSibling.childNodes;
 for (var i=1; i <= 20; i++){
     data[i] = [];
+    //GM_log(i + ' ' + img[i].alt + ' | ' + poly[i].title);
 
-    data[i]['className'] = img[i].className;
+    data[i]['className'] = img[i].className.split(' ')[2];
 
-    data[i]['title'] = poly[i+1].title;
-    data[i]['href'] = poly[i+1].href;
+    data[i]['title'] = poly[i].title;
+    data[i]['href'] = poly[i].href;
 }
 
 // Get the user mappings...
@@ -46,7 +47,7 @@ var mapping = eval(GM_getValue('mapping', '({})'));
 
 // Get the active village, to store the new mappings
 // We don't have to worry about postfixes because we're only running on one page
-var did = document.evaluate('//a[@class="active_vl"]', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
+var did = document.evaluate('//tr[@class="sel"]/td[@class="text"]/a', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
 
 // Single village support courtesy of Booboo
 if (!did) {
@@ -72,9 +73,10 @@ if (mapping[did] == undefined) mapping[did] = {};
 
 function move(dest, src){
     //GM_log('Moving '+src+' to '+dest);
-    img[src].className = data[dest].className;
-    poly[dest- -1].title = data[src].title;
-    poly[dest- -1].href = data[src].href;
+    var base = img[dest].className.split(' '); // We only change the last part of the class name
+    img[dest].className = base[0]+' '+base[1]+' '+data[src].className;
+    poly[dest].title = data[src].title;
+    poly[dest].href = data[src].href;
 }
 
 // The index is the destination, the value the source
@@ -84,13 +86,13 @@ for (var i in mapping[did]) move(i, mapping[did][i]);
 var div = document.createElement('div');
 div.setAttribute('style', 'position:absolute; top:510px; left:155px; padding:2px; z-index:16; border:none; cursor:pointer');
 div.innerHTML = '<img title="Swap Buildings" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QCMRXhpZgAASUkqAAgAAAABAGmHBAABAAAAGgAAAAAAAAABAIaSAgBYAAAALAAAAAAAAABXaW5kb3dFeHQ6IDMwMzUsIDI2NzQNV2luZG93T3JnOiAwLCAwDUNvbnRlbnQ6IDEwLCAyNiwgMzAxMiwgMjY3Mg1JZ25vcmVkIE9wY29kZXM6DSQxMDUA/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAHAAhAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A99d0ijaSRlRFBZmY4AA6kmvNvGmraxq/hbU7/Try50rTLaAzRSwZW4uQp3F89Y49oOAMM3BJUcNjeM/FUnjGy1PTNJ1BbKGxhmeWETHzbshWXy2CsuwHkgbm3cbh8rLW74r1vSb3wNrq22qWUxl024CCOdW3ExNjGDXzeb5rUpzhSwvWXvOz0WnlbXv5G1OC3keHyaTrrSanO+rXYazkZwlw7icwZJEnzHg4X/a57A9fdPgx/aZ8DyPqmoXV9I92/lyXMrSMqBEXaCScAMG4968T1G9guPFzzwvObK5tfsksoJudqOGDfMCxyDjGD+Fe6/DjUbC28GQRGYpm7vCu5GHy/aZdvb0xXqYSdZzans1fYuvGK2O6oqL7TD/z0WivQOY85u/gpoH2y8vdKubmwnuM7Y/vwRZVgQIxtJGW3DLHBAxwMV5trXwU8bWWsXE+kSwX0RIWOVplR3UD/lorcHpg5znvmvpSip5Ve9tR3Z8/f8IVd+DLTd4ljsbrStRRI7ow26R/Y5CoXcu0Y25wNwwc4ODXWfDW2stBvW8OX0mbjc0+ns2BHcx4GdoAwHUAEr3yX+bLEemX9hbanZyWl3EssEilXRhkEEYI/EEj8a+fvGM8nhvUbrw9Zu0lvYSLLZXEzFp7YhFddjjH3ScDIJxwc10RalHle62PPqxlRrKtB6S0kvya8+/c+iqKz/3/APz9y/8AfKf/ABNFYnef/9k=">';
-document.getElementById('ltop1').parentNode.appendChild(div);
+document.getElementById('msfilter').parentNode.appendChild(div);
 
 function notify(msg){
     var div = document.createElement('div');
     div.setAttribute('style', 'position:absolute; top:350px; left:400px; padding:2px; z-index:160; border:solid black 1px; background:#fff; -moz-border-radius:5px;');
     div.innerHTML = msg;
-    document.getElementById('ltop1').parentNode.appendChild(div);
+    document.getElementById('msfilter').parentNode.appendChild(div);
 
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
@@ -102,12 +104,13 @@ div.addEventListener('click', function(){
         for (var i in poly)
             if (poly[i].href != undefined)
                 poly[i].href = '#'+(poly[i].href.split('id=')[1] - 18);
-        var wall = document.getElementsByName('map2')[0].childNodes;
+        var wall = document.getElementById('map1').childNodes;
         for (var i in wall)
             if (wall[i].href != undefined)
                 wall[i].href = '#22';
 
-        for (var i in img) img[i].addEventListener('click', function(e){
+        for (var i in poly) poly[i].addEventListener('click', function(e){
+                GM_log('hi');
                 var dest = e.target.href.split('#')[1];
                 if (dest == '21'){
                     notify('<b>You cannot move the rally point</b>');
