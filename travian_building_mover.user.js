@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.2.0
+// @version        1.3.0
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -112,7 +112,19 @@ function notify(msg){
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
 
+var truck_stage = 0;
 div.addEventListener('click', function(){
+        // If the truck gets clicked a second time...
+        if (truck_stage == 1){
+            if (window.confirm("Reset this village's buildings to their original position?")){
+                delete mapping[did];
+                GM_setValue('mapping', uneval(mapping));
+                location.reload();
+            }
+            return;
+        }
+        truck_stage++;
+
         // Add listeners to all of the objects
         var stage = 0;
         var src;
