@@ -101,13 +101,13 @@ for (var i in mapping[did]) move(i, mapping[did][i]);
 var div = document.createElement('div');
 div.setAttribute('style', 'position:absolute; top:510px; left:155px; padding:2px; z-index:16; border:none; cursor:pointer');
 div.innerHTML = '<img title="Swap Buildings" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QCMRXhpZgAASUkqAAgAAAABAGmHBAABAAAAGgAAAAAAAAABAIaSAgBYAAAALAAAAAAAAABXaW5kb3dFeHQ6IDMwMzUsIDI2NzQNV2luZG93T3JnOiAwLCAwDUNvbnRlbnQ6IDEwLCAyNiwgMzAxMiwgMjY3Mg1JZ25vcmVkIE9wY29kZXM6DSQxMDUA/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAHAAhAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A99d0ijaSRlRFBZmY4AA6kmvNvGmraxq/hbU7/Try50rTLaAzRSwZW4uQp3F89Y49oOAMM3BJUcNjeM/FUnjGy1PTNJ1BbKGxhmeWETHzbshWXy2CsuwHkgbm3cbh8rLW74r1vSb3wNrq22qWUxl024CCOdW3ExNjGDXzeb5rUpzhSwvWXvOz0WnlbXv5G1OC3keHyaTrrSanO+rXYazkZwlw7icwZJEnzHg4X/a57A9fdPgx/aZ8DyPqmoXV9I92/lyXMrSMqBEXaCScAMG4968T1G9guPFzzwvObK5tfsksoJudqOGDfMCxyDjGD+Fe6/DjUbC28GQRGYpm7vCu5GHy/aZdvb0xXqYSdZzans1fYuvGK2O6oqL7TD/z0WivQOY85u/gpoH2y8vdKubmwnuM7Y/vwRZVgQIxtJGW3DLHBAxwMV5trXwU8bWWsXE+kSwX0RIWOVplR3UD/lorcHpg5znvmvpSip5Ve9tR3Z8/f8IVd+DLTd4ljsbrStRRI7ow26R/Y5CoXcu0Y25wNwwc4ODXWfDW2stBvW8OX0mbjc0+ns2BHcx4GdoAwHUAEr3yX+bLEemX9hbanZyWl3EssEilXRhkEEYI/EEj8a+fvGM8nhvUbrw9Zu0lvYSLLZXEzFp7YhFddjjH3ScDIJxwc10RalHle62PPqxlRrKtB6S0kvya8+/c+iqKz/3/APz9y/8AfKf/ABNFYnef/9k=">';
-document.getElementById('msfilter').parentNode.appendChild(div);
+document.body.appendChild(div);
 
 function notify(msg){
     var div = document.createElement('div');
     div.setAttribute('style', 'position:absolute; top:350px; left:400px; padding:2px; z-index:160; border:solid black 1px; background:#fff; -moz-border-radius:5px;');
     div.innerHTML = msg;
-    document.getElementById('msfilter').parentNode.appendChild(div);
+    document.body.appendChild(div);
 
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
@@ -124,6 +124,7 @@ div.addEventListener('click', function(){
             return;
         }
         truck_stage++;
+        div.childNodes[0].title = 'Restore building positions';
 
         // Add listeners to all of the objects
         var stage = 0;
