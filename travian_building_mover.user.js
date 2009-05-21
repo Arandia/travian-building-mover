@@ -112,15 +112,25 @@ function notify(msg){
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
 
+function reset_vil(){
+    if (!window.confirm("Reset this village's buildings to their original position?")) return;
+    delete mapping[did];
+    GM_setValue('mapping', uneval(mapping));
+    location.reload();
+}
+
+GM_registerMenuCommand("BM: Reset this village's buildings", reset_vil);
+GM_registerMenuCommand("BM: Reset all buildings", function(){
+        if (!window.confirm("Reset all buildings in all villages to their original position?")) return;
+        GM_setValue('mapping', '({})');
+        location.reload();
+    });
+
 var truck_stage = 0;
 div.addEventListener('click', function(){
         // If the truck gets clicked a second time...
         if (truck_stage == 1){
-            if (window.confirm("Reset this village's buildings to their original position?")){
-                delete mapping[did];
-                GM_setValue('mapping', uneval(mapping));
-                location.reload();
-            }
+            reset_vil();
             return;
         }
         truck_stage++;
