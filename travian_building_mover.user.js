@@ -23,6 +23,14 @@
  * <http://www.gnu.org.licenses/>
  *****************************************************************************/
 
+// Register these first, in case the script fails later and we still want to reset things
+GM_registerMenuCommand("BM: Reset this village's buildings", reset_vil);
+GM_registerMenuCommand("BM: Reset all buildings", function(){
+        if (!window.confirm("Reset all buildings in all villages to their original position?")) return;
+        GM_setValue('mapping', '({})');
+        location.reload();
+    });
+
  // Init
 var server = location.host;
 var uid = document.evaluate("id('sleft')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
@@ -118,13 +126,6 @@ function reset_vil(){
     GM_setValue('mapping', uneval(mapping));
     location.reload();
 }
-
-GM_registerMenuCommand("BM: Reset this village's buildings", reset_vil);
-GM_registerMenuCommand("BM: Reset all buildings", function(){
-        if (!window.confirm("Reset all buildings in all villages to their original position?")) return;
-        GM_setValue('mapping', '({})');
-        location.reload();
-    });
 
 var truck_stage = 0;
 div.addEventListener('click', function(){
