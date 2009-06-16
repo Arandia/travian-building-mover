@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.4.2
+// @version        1.4.3
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -44,6 +44,8 @@ var img = document.getElementById('map2').nextSibling.nextSibling.childNodes;
 // Raw_num won't have the right number of elements if there are unused building spots in the village
 var num = [];
 var raw_num = document.getElementById('village2_levels');
+// Some servers use a different ID...
+if (raw_num == undefined) raw_num = document.getElementById('levels');
 if (raw_num != undefined){
     raw_num = raw_num.childNodes;
     for (var i in raw_num){
@@ -110,7 +112,7 @@ for (var i in mapping[did]) move(i, mapping[did][i]);
 
 // Get input from the user... add the moving truck.
 var div = document.createElement('div');
-div.setAttribute('style', 'position:absolute; top:489px; left:163px; padding:2px; z-index:16; border:none; cursor:pointer');
+div.setAttribute('style', 'position:absolute; top:489px; left:163px; padding:2px; z-index:100; border:none; cursor:pointer');
 div.innerHTML = '<img title="Swap Buildings" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QCURXhpZgAASUkqAAgAAAABAGmHBAABAAAAGgAAAAAAAAABAIaSBwBgAAAALAAAAAAAAABBU0NJSQAAAFdpbmRvd0V4dDogMzAzNSwgMjY3NA1XaW5kb3dPcmc6IDAsIDANQ29udGVudDogMTAsIDI2LCAzMDEyLCAyNjcyDUlnbm9yZWQgT3Bjb2RlczoNJDEwNQD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAcACEDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAcIBgED/8QAMRAAAgIBAwMCAwUJAAAAAAAAAQIDBAUGERIABxMhMQgVFxQiMmGUIzRRUlNWcZHS/8QAGAEBAAMBAAAAAAAAAAAAAAAABQAEBgH/xAAkEQABAwMDBAMAAAAAAAAAAAABAAIDBBExEiEiBRRRYUFSwf/aAAwDAQACEQMRAD8AoP4khmPoxqF8FlbmJvRRxSpbqTtDLEqTxtIVdSCPuBh+e/UNyYPW8unY83FqS/NesTeCpG1mQ2rTjcSEFSTupjb3A9Nt2I2DXN3uzWLl7Sa2px2uVk4G+EVY2P3xBJt7D+PUZZm/Rg7lYiOu9z5LirMzJY8TVuAmaWWX9oxU7gsoB5KNh6b9F175w5ojxuceFcpGsJ5Khuxd7WmE0hJmEzGd1VjPmVmGShkyzXEhifxcq7OeXNWjfeF2Kt6cSjDZ35iMlQzGMr5PHTpYqWI/JFIu+zL/AIPqD+R9R0kex+pdOVu2tQ2M5jqvK/kZeNi+hYK96wykuWPL0P4tzv779ZrSmu27e5HIaiuajqZTT2dyd94MYbpHgX7XMyzQMzuhaVWJEYESMCrEjg7HL9F6/UPrZ6asHFruBsd/WLbeVJ4m5Yqe4j+dv99HWJ+o+nP6l79M/wD10dbfu4fsqtnrHfEm+PuURpDGN5NT5pAVroRwirhwWsTggjx7rwCkHy7lOLDmVUGL7ZrrCtFofQjY6pisFMnzPMT0o53uWVIYxBSNnCkqWDNsAVADbb9eT53J2e8Wd00bLRS5vUjUrWXT9+WE2jCqo53RQkahVHDYe+2/r1V2h9M4XSWHjweCpitSqjxxruWYj8RLMfUks7Ek+5Y9IEiOK4y5BxskrKxz3u4RYHk/JP4oqxvw0d6slnaz5VcNQr17CFZRPD4I039WjhjHEbbctuI3J3I39enlW+FrSlqtTj1RqDMZZqcgKGAmBZYw0hIlVjJzdg4VnUo2yLx4kEmhB109HljL3tum9RS/+jHa3+wdO/oV6Ot90dTX6XdRX//Z">';
 document.body.appendChild(div);
 
