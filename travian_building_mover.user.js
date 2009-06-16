@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.4.1
+// @version        1.4.2
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -43,10 +43,13 @@ var img = document.getElementById('map2').nextSibling.nextSibling.childNodes;
 
 // Raw_num won't have the right number of elements if there are unused building spots in the village
 var num = [];
-var raw_num = document.getElementById('village2_levels').childNodes;
-for (var i in raw_num){
-    if (raw_num[i].className == undefined || raw_num[i].className.indexOf('level') >= 0) continue; // Don't do walls, closing divs, or the rally point
-    num[raw_num[i].className.split('d')[1] - 0] = raw_num[i]; // re-index these nodes so they don't get mistakenly translated by an empty spot
+var raw_num = document.getElementById('village2_levels');
+if (raw_num != undefined){
+    raw_num = raw_num.childNodes;
+    for (var i in raw_num){
+        if (raw_num[i].className == undefined || raw_num[i].className.indexOf('level') >= 0) continue; // Don't do walls, closing divs, or the rally point
+        num[raw_num[i].className.split('d')[1] - 0] = raw_num[i]; // re-index these nodes so they don't get mistakenly translated by an empty spot
+    }
 }
 
 // Store the current info about all of the buildings...
