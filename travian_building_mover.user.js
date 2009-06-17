@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.4.3
+// @version        1.4.4
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -72,7 +72,12 @@ var mapping = eval(GM_getValue('mapping', '({})'));
 // Get the active village, to store the new mappings
 // We don't have to worry about postfixes because we're only running on one page
 var did = document.evaluate('//tr[@class="sel"]/td[@class="text"]/a', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
-
+if (did) did = did.href.match('newdid=([0-9]*)')[1];
+else {
+    // If this fails, there's a possibility that we're just running the other type of travian (??? still 3.5, but with different code...)
+    did = document.evaluate('//table[@id="vlist"]/tbody/tr/td[@class="dot hl"]', document, null, XPathResult.ANY_UNORDERED_NODE_TYPE,null).singleNodeValue;
+    if (did) did = did.parentNode.innerHTML.match('newdid=([0-9]*)')[1];
+}
 // Single village support courtesy of Booboo
 if (!did) {
     var single_villages = eval(GM_getValue('single_villages', '({})'));
@@ -91,7 +96,6 @@ if (!did) {
     }
     else did = single_villages[server + "_" + uid];
 }
-else did = did.href.match('newdid=([0-9]*)')[1];
 
 if (mapping[did] == undefined) mapping[did] = {};
 
