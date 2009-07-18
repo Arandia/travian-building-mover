@@ -23,6 +23,16 @@
  * <http://www.gnu.org.licenses/>
  *****************************************************************************/
 
+// First, get the user mappings...
+var mapping = eval(GM_getValue('mapping', '({})'));
+
+function reset_vil(){
+    if (!window.confirm("Reset this village's buildings to their original position?")) return;
+    delete mapping[did];
+    GM_setValue('mapping', uneval(mapping));
+    location.reload();
+}
+
 // Register these first, in case the script fails later and we still want to reset things
 GM_registerMenuCommand("BM: Reset this village's buildings", reset_vil);
 GM_registerMenuCommand("BM: Reset all buildings", function(){
@@ -34,7 +44,28 @@ GM_registerMenuCommand("BM: Reset all buildings", function(){
  // Init
 var server = location.host;
 var uid = document.evaluate("id('sleft')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
-//GM_log("uid: " + uid);
+
+// Add support for the 'toggle building levels' button, so we can make it persistent
+// Otherwise, this value keeps getting cleared whenever cookies get cleared, which for the more paranoid of us would be every time the browser restarts ;-)
+var toggle = eval(GM_getValue('show_building_level', '({})'));
+var button = document.getElementById('lswitch');
+if (button != undefined){
+    var current_toggle = button.className == "on";
+    // If we don't have a saved setting for this server and user, then take the present value of the toggle
+    if (toggle[server+'_'+uid] == undefined){
+        toggle[server+'_'+uid] = current_toggle;
+        GM_setValue('show_building_level', uneval(toggle));
+    }
+    // Otherwise, correct the value of the toggle to what we have saved
+    // *note* calling vil_levels_toggle() in this fashion is safer than using unsafeWindow, because unsafeWindow would elevate the privilege of the function.
+    else if (current_toggle != toggle[server+'_'+uid]) location.href = "javascript:void(vil_levels_toggle());";
+
+    // Either way, add a listener to update our version of the toggle when it's clicked
+    button.addEventListener('click', function(){
+            toggle[server+'_'+uid] = !toggle[server+'_'+uid];
+            GM_setValue('show_building_level', uneval(toggle));
+        }, false);
+}
 
 // Look at where the original buildings are *first*
 var data = [];
@@ -65,9 +96,6 @@ for (var i=1; i <= 20; i++){
     data[i]['title'] = poly[i].title;
     data[i]['href'] = poly[i].href;
 }
-
-// Get the user mappings...
-var mapping = eval(GM_getValue('mapping', '({})'));
 
 // Get the active village, to store the new mappings
 // We don't have to worry about postfixes because we're only running on one page
@@ -127,13 +155,6 @@ function notify(msg){
     document.body.appendChild(div);
 
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
-}
-
-function reset_vil(){
-    if (!window.confirm("Reset this village's buildings to their original position?")) return;
-    delete mapping[did];
-    GM_setValue('mapping', uneval(mapping));
-    location.reload();
 }
 
 var truck_stage = 0;
