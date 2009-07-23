@@ -43,7 +43,7 @@ GM_registerMenuCommand("BM: Reset all buildings", function(){
 
  // Init
 var server = location.host;
-var uid = document.evaluate("id('sleft')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
+var uid = document.evaluate("id('side_navi')//a[contains(@href, 'spieler.php')]/@href", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.match(/uid=(\d+)/)[1];
 
 // Add support for the 'toggle building levels' button, so we can make it persistent
 // Otherwise, this value keeps getting cleared whenever cookies get cleared, which for the more paranoid of us would be every time the browser restarts ;-)
