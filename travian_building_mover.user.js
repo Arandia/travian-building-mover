@@ -2,7 +2,7 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.5.1
+// @version        1.6.0
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
@@ -127,7 +127,37 @@ if (!did) {
 
 if (mapping[did] == undefined) mapping[did] = {};
 
-// This moves a building from src to dest.
+// The index is the destination, the value the source
+for (var i in mapping[did]) move(i, mapping[did][i]);
+
+// Are we in move mode?
+var move_mode = GM_getValue('move_mode', false);
+var unclicked = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAgACUDASIAAhEBAxEB/8QAGgABAAMAAwAAAAAAAAAAAAAACAAGBwEEBf/EACwQAAIBAwQCAQIFBQAAAAAAAAECAwQFEQAGEiEHMRMUIggVIzJxGEFSofD/xAAYAQADAQEAAAAAAAAAAAAAAAADBAUGAv/EACURAAICAgADCQAAAAAAAAAAAAECAAMEEQUSIQYTIjFBUWFxkf/aAAwDAQACEQMRAD8AY8rsoPH36Gf+9aD/APUR52u9e8FLS2ulnQE/TUNCGwqhS3ISF2zgn1k5yAvrTflALEEgetAfylLV7Zi3e1JK0BvN2rKOF1kAKpT1lasikdseUfBRgemPeksy56wAnqdQ+Oiu2jNd8FebvKO43M9/slru1sSjapk/L4mjr0AmMXUXIrIRxdvj+xiAeJY4VkbY7xQ3y1U90tVZFVUdQvOKWPsMM4P8EEEEHBBBBHWjz+HaOjO4NwS0otb4s9rDfQ06xqpL1hIbDNlsFSTkZ6GOtWC57mvGy/LVTHbrUs+2aijpa2+mOLL0ru9Qn1KAOGLH4k5IsblgjEFW/fm8ftGzcUfBtGgACDv310MNfQq9Vm7x8uP3HJ1NdHb91t95tq3C2VUdTTu7AMvRVgcMrA9qynIKkAgggjI1NbBWDDYiU8TftBTmjqLvNVR0sVHCZaiSaXhGsSAszEnpcLk5PXvOPehmu0Y62z3DdG5aKa5XK9VMxsVqp6dRJVSSM0jycfj5iNmJcKSCi/uY9MUz5psO8t0bpoLallqq7aFLHHVSQ0dRAprasOeKTiWRD8UYVWCjIZmBJygxPGnjW7wblbem8/ga7yRiOjoYJecVthHfDkenlY4ZnA9rgEgnkzWEC8zfkmZLZVt601+FR1J8t/Ag2rbx5P2Vd57DQUW56C8zQQmpd6w1RkwhdRD8ahQn6khxlhk4ypB1rm1PH3nPd+0Khqiqq7O91popFrLrVs5ZFSTiGCt8scgk4MoEYRQ7MMsBljrGAB16/wBfxrkov+Of76lvg47tzlBv6lbvDKH4C2Pc/H3juCwXi8G61xmeeWQdpGWC/po2AzquOmYAnvpRhRNX5AAMAAd561NNKABoTknc/9k=';
+var clicked   = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAgACUDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAABwgABQYBBP/EADAQAAIBBAEDAgMGBwAAAAAAAAECAwQFBhEHABIhEzEIFCMVIiYyNFFBQ1ZlcbTT/8QAGQEAAgMBAAAAAAAAAAAAAAAAAQYEBQgH/8QAKBEAAgEDAwIFBQAAAAAAAAAAAQIDAAQFERIhBhMxQXGS0RVRVGGB/9oADAMBAAIRAxEAPwAj8H8VYFknFVnvd5sHzVwqfXEsxq507u2eRR91XUaCqPbXt+/SrfaWQ3eveClwu10s6An5ahaobSqFLdwkldt6J9tnewF9unf+GcA8IY+CQP1P+zN0qHKUtXjMWXtSStAbzdqyjhdZACqU9ZWrIpHlj3R9ijQ9mPnqjaONbePaikkDy/VOmVzWSXK3Ma3LhRI4ADsAAGPAGtWnBUEeRuZ7/wAd2u7WxKNqmT7Pq6uOvQCYxeIvWKyEdrt6f3GIB7Sx0rMbY+IuHb5aqe6WqxRVVHUL3xSx3CpIYb0f5nggggg6IIII8dYL4do6M5BkEtKLW+rPaw3yNOsaqS9YSG0zbbRUk7G/A1460Fzya8YXy1Ux261LPjNRR0tbfTHFt6V3eoT5lAHDFj6SdyLG5YIxBVvz0Vvl4Wyj2MsagAAg8eenBqBPmsqvK3Unvb5oSfEridhw7OqK2Y7QfJUstsjneP1nk25llUnbsT7KB+3jqde34rLrb7zn1ruFsqo6mnezoAy+CrCecMrA+VZTsFSAQQQRsdTo3u3vts8K750tNLPiLeSVizFeSTqT6k0U+IKCnPAVmu81VHSxUcNVLUSTS9kaxJUTMzEnwul2dnx77179L4uIx1tnuGUZLRTXK5XqpmNitVPTqJKqSRmkeTt9PvEbMS4UkFF/Mx8MbmizqifE8XxK8S1T4/bI3qqqko02aurNVK6JP3FdxRr2OFUkMzgkgoANvxpleBQZK2aZnlUDXeSMR0dDBSVTxW2EeezuMenlY6ZnA910CQT3OFjc2qW6F3XUAcajx0rPHU2Dzt1m51t7aTt9x23BG0I3HQA6ef3pf628cn4Vd57DQUWT0F5mghNS71hqjJpC6iH01ChPqSHW2GzrakHouYpx9znl+IVDVFVV2d7rTRSLWXWrZyyKknaGCt6scgk7GUCMIodmG2A2fl5y4qAH4o9v7fU+P8fT66ecuKf6o3/H9BU/8+obpj3beSuv8o/Qsx+LJ7G+KVXlDB7nx9WWawXi8G61xtazyyDykZaaX6aNoM6rrwzAE+fCjSidaL4l8rx/MM7orljdcK2kitiQPIIXj1IJZWI06g+zA71rz1Olu8KmdivhWhuloZIcRbxyqVYLyCNCPUGv/9k=';
+
+if (move_mode == true) start_move();
+
+// Get input from the user... add the moving truck.
+var div = document.createElement('div');
+div.setAttribute('style', 'position:absolute; top:487px; left:161px; padding:2px; z-index:100; border:none; cursor:pointer');
+div.innerHTML = '<img title="" src="">';
+document.body.appendChild(div);
+change_truck();
+
+// And the click listener onto the moving truck button
+div.addEventListener('click', function(){
+        move_mode = !move_mode;
+        GM_setValue('move_mode', move_mode);
+
+        if (move_mode == false)
+            window.location.reload();
+        else {
+            change_truck();
+            start_move();
+        }
+    }, false);
+
+// This moves a building from src to dest. Used many times per page load.
 function move(dest, src){
     //GM_log('Moving '+src+' to '+dest);
     var base = img[dest].className.split(' '); // We only change the last part of the class name
@@ -139,15 +169,7 @@ function move(dest, src){
     poly[dest].href = data[src].href;
 }
 
-// The index is the destination, the value the source
-for (var i in mapping[did]) move(i, mapping[did][i]);
-
-// Get input from the user... add the moving truck.
-var div = document.createElement('div');
-div.setAttribute('style', 'position:absolute; top:489px; left:163px; padding:2px; z-index:100; border:none; cursor:pointer');
-div.innerHTML = '<img title="Swap Buildings" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QCURXhpZgAASUkqAAgAAAABAGmHBAABAAAAGgAAAAAAAAABAIaSBwBgAAAALAAAAAAAAABBU0NJSQAAAFdpbmRvd0V4dDogMzAzNSwgMjY3NA1XaW5kb3dPcmc6IDAsIDANQ29udGVudDogMTAsIDI2LCAzMDEyLCAyNjcyDUlnbm9yZWQgT3Bjb2RlczoNJDEwNQD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAcACEDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAcIBgED/8QAMRAAAgIBAwMCAwUJAAAAAAAAAQIDBAUGERIABxMhMQgVFxQiMmGUIzRRUlNWcZHS/8QAGAEBAAMBAAAAAAAAAAAAAAAABQAEBgH/xAAkEQABAwMDBAMAAAAAAAAAAAABAAIDBBExEiEiBRRRYUFSwf/aAAwDAQACEQMRAD8AoP4khmPoxqF8FlbmJvRRxSpbqTtDLEqTxtIVdSCPuBh+e/UNyYPW8unY83FqS/NesTeCpG1mQ2rTjcSEFSTupjb3A9Nt2I2DXN3uzWLl7Sa2px2uVk4G+EVY2P3xBJt7D+PUZZm/Rg7lYiOu9z5LirMzJY8TVuAmaWWX9oxU7gsoB5KNh6b9F175w5ojxuceFcpGsJ5Khuxd7WmE0hJmEzGd1VjPmVmGShkyzXEhifxcq7OeXNWjfeF2Kt6cSjDZ35iMlQzGMr5PHTpYqWI/JFIu+zL/AIPqD+R9R0kex+pdOVu2tQ2M5jqvK/kZeNi+hYK96wykuWPL0P4tzv779ZrSmu27e5HIaiuajqZTT2dyd94MYbpHgX7XMyzQMzuhaVWJEYESMCrEjg7HL9F6/UPrZ6asHFruBsd/WLbeVJ4m5Yqe4j+dv99HWJ+o+nP6l79M/wD10dbfu4fsqtnrHfEm+PuURpDGN5NT5pAVroRwirhwWsTggjx7rwCkHy7lOLDmVUGL7ZrrCtFofQjY6pisFMnzPMT0o53uWVIYxBSNnCkqWDNsAVADbb9eT53J2e8Wd00bLRS5vUjUrWXT9+WE2jCqo53RQkahVHDYe+2/r1V2h9M4XSWHjweCpitSqjxxruWYj8RLMfUks7Ek+5Y9IEiOK4y5BxskrKxz3u4RYHk/JP4oqxvw0d6slnaz5VcNQr17CFZRPD4I039WjhjHEbbctuI3J3I39enlW+FrSlqtTj1RqDMZZqcgKGAmBZYw0hIlVjJzdg4VnUo2yLx4kEmhB109HljL3tum9RS/+jHa3+wdO/oV6Ot90dTX6XdRX//Z">';
-document.body.appendChild(div);
-
+// Notify the user in a non-intrusive manner (no clicking away).
 function notify(msg){
     var div = document.createElement('div');
     div.setAttribute('style', 'position:absolute; top:350px; left:400px; padding:2px; z-index:160; border:solid black 1px; background:#fff; -moz-border-radius:5px;');
@@ -157,69 +179,71 @@ function notify(msg){
     window.setTimeout(function(){div.parentNode.removeChild(div);}, 2000);
 }
 
-var truck_stage = 0;
-div.addEventListener('click', function(){
-        // If the truck gets clicked a second time...
-        if (truck_stage == 1){
-            reset_vil();
-            return;
-        }
-        truck_stage++;
-        div.childNodes[0].title = 'Restore building positions';
+// Switch the truck's title and image. Must be called *after* the truck is on the screen.
+function change_truck(){
+    if (move_mode == true){
+        div.childNodes[0].title = "Stop Swapping Buildings";
+        div.childNodes[0].src = clicked;
+    } else {
+        div.childNodes[0].title = "Swap Buildings";
+        div.childNodes[0].src = unclicked;
+    }
+}
 
-        // Add listeners to all of the objects
-        var stage = 0;
-        var src;
+// Add click listeners to all of the buildings. Swap the first-clicked building with the second-clicked one.
+function start_move(){
+    var stage = 0;
+    var src;
 
-        // Cut all of the village links, so clicking on the villages no longer redirects
-        // Also, store index info in here - it's the easiest way I can think of getting this info to the click listener routine
-        for (var i in poly)
-            if (poly[i].href != undefined)
-                poly[i].href = '#'+(poly[i].href.split('id=')[1] - 18);
-        var wall = document.getElementById('map1').childNodes;
-        for (var i in wall)
-            if (wall[i].href != undefined)
-                wall[i].href = '#22';
+    // Cut all of the village links, so clicking on the villages no longer redirects
+    // Also, store index info in here - it's the easiest way I can think of getting this info to the click listener routine
+    for (var i in poly)
+        if (poly[i].href != undefined)
+            poly[i].href = '#'+(poly[i].href.split('id=')[1] - 18);
+    var wall = document.getElementById('map1').childNodes;
+    for (var i in wall)
+        if (wall[i].href != undefined)
+            wall[i].href = '#22';
 
-        // Listen for a click on each building
-        for (var i in poly) poly[i].addEventListener('click', function(e){
-                var dest = e.target.href.split('#')[1]; // Extract the index info from above
+    // Listen for a click on each building
+    for (var i in poly) poly[i].addEventListener('click', function(e){
+            var dest = e.target.href.split('#')[1]; // Extract the index info from above
 
-                // Error conditions
-                if (dest == '21'){
-                    notify('<b>You cannot move the rally point</b>');
-                    return;
-                }
-                if (dest == '22'){
-                    notify('<b>You cannot move the walls</b>');
-                    return;
-                }
+            // Error conditions
+            if (dest == '21'){
+                notify('<b>You cannot move the rally point</b>');
+                return;
+            }
+            if (dest == '22'){
+                notify('<b>You cannot move the walls</b>');
+                return;
+            }
 
-                // This is the first click
-                if (stage == 0){
-                    src = dest; // actually...
+            // This is the first click
+            if (stage == 0){
+                src = dest; // actually...
 
-                    notify('<b>Click on the second one</b>');
-                    stage++;
-                } else { // Now we have to save said data
-                    var m = mapping[did];
+                notify('<b>Click on the second one</b>');
+                stage++;
+            } else { // Now we have to save said data
+                var m = mapping[did];
 
-                    //GM_log('src='+src+' dest='+dest);
-                    // First, find who *holds* src right now
-                    var temp = src;
-                    while (m[temp] != undefined && m[temp] != src) temp = m[temp];
-                    // Find who *holds* dest right now
-                    var temp2 = dest;
-                    while (m[temp2] != undefined && m[temp2] != dest) temp2 = m[temp2];
-                    //GM_log('m['+temp+']='+dest);
-                    //GM_log('m['+temp2+']='+src);
-                    m[temp] = parseInt(dest);
-                    m[temp2] = parseInt(src);
+                //GM_log('src='+src+' dest='+dest);
+                // First, find who *holds* src right now
+                var temp = src;
+                while (m[temp] != undefined && m[temp] != src) temp = m[temp];
+                // Find who *holds* dest right now
+                var temp2 = dest;
+                while (m[temp2] != undefined && m[temp2] != dest) temp2 = m[temp2];
+                //GM_log('m['+temp+']='+dest);
+                //GM_log('m['+temp2+']='+src);
+                m[temp] = parseInt(dest);
+                m[temp2] = parseInt(src);
 
-                    GM_setValue('mapping', uneval(mapping));
-                    window.location.reload();
-                }
-            }, false);
-
-        notify('<b>Click on the first building</b>');
-    }, false);
+                GM_setValue('mapping', uneval(mapping));
+                window.location.reload();
+            }
+        }, false);
+    
+    notify('<b>Click on the first building</b>');
+}
