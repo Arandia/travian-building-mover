@@ -2,13 +2,13 @@
 // @name           Travian Building Mover
 // @namespace      Travian Building Mover
 // @description    This repositions the buildings on the dorf2.php page
-// @version        1.6.0
+// @version        1.6.1
 // @include        http://*.travian.*/dorf2.php*
 // @license        GPL 3 or any later version
 // ==/UserScript==
 
 /*****************************************************************************
- * Copyright (C) 2009 Adriaan Tichler
+ * Copyright (C) 2009, 2010 Adriaan Tichler
  *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -127,8 +127,7 @@ if (!did) {
 
 if (mapping[did] == undefined) mapping[did] = {};
 
-// The index is the destination, the value the source
-for (var i in mapping[did]) move(i, mapping[did][i]);
+redraw_village();
 
 // Are we in move mode?
 var move_mode = GM_getValue('move_mode', false);
@@ -156,6 +155,11 @@ div.addEventListener('click', function(){
             start_move();
         }
     }, false);
+
+function redraw_village(){
+    // The index is the destination, the value the source
+    for (var i in mapping[did]) move(i, mapping[did][i]);
+}
 
 // This moves a building from src to dest. Used many times per page load.
 function move(dest, src){
@@ -241,7 +245,17 @@ function start_move(){
                 m[temp2] = parseInt(src);
 
                 GM_setValue('mapping', uneval(mapping));
-                window.location.reload();
+
+                // Go back to stage one
+                notify('<b>Click on the first building</b>');
+                stage = 0;
+
+                // Re-move all of the moved buildings
+                redraw_village();
+
+                // Redraw_village resets the href of all the buildings in mapping ONLY.
+                // So, un-reset them in case they get moved in the future.
+                for (var j in mapping[did]) poly[j].href = '#'+mapping[did][j];
             }
         }, false);
     
