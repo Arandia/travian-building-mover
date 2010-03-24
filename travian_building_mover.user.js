@@ -244,8 +244,6 @@ function start_move(){
                 m[temp] = parseInt(dest);
                 m[temp2] = parseInt(src);
 
-                GM_setValue('mapping', uneval(mapping));
-
                 // Go back to stage one
                 notify('<b>Click on the first building</b>');
                 stage = 0;
@@ -256,6 +254,13 @@ function start_move(){
                 // Redraw_village resets the href of all the buildings in mapping ONLY.
                 // So, un-reset them in case they get moved in the future.
                 for (var j in mapping[did]) poly[j].href = '#'+mapping[did][j];
+
+                // Now delete any buildings that are actually in their home position (keep
+                // things tidy), and then save the mapping.
+                if (temp  == m[temp])  delete mapping[did][temp];
+                if (temp2 == m[temp2]) delete mapping[did][temp2];
+
+                GM_setValue('mapping', uneval(mapping));
             }
         }, false);
     
